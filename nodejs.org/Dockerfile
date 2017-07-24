@@ -50,7 +50,7 @@ RUN set -ex && \
   curl -o SHASUMS256.txt.asc -sSL https://nodejs.org/dist/v${NODE_VERSION}/SHASUMS256.txt.asc && \
   gpg --batch -d SHASUMS256.txt.asc | grep " node-v${NODE_VERSION}-linux-x64.tar.gz\$" | sha256sum -c - && \
   tar -zxf node-v${NODE_VERSION}-linux-x64.tar.gz -C /usr/local --strip-components=1 && \
-  npm install -g npm@${NPM_VERSION} http-server uglifyjs nodemon node-gyp node-pre-gyp cnpm && \
+  npm install -g npm@${NPM_VERSION} http-server uglify-js nodemon node-gyp node-pre-gyp cnpm && \
   find /usr/local/lib/node_modules/npm -name test -o -name .bin -type d | xargs rm -rf; \
   rm -rf ~/node-v${NODE_VERSION}-linux-x64.tar.gz ~/SHASUMS256.txt.asc /tmp/node-v${NODE_VERSION} ~/.npm ~/.node-gyp ~/.gnupg \
     /usr/share/man /tmp/* /usr/local/lib/node_modules/npm/man /usr/local/lib/node_modules/npm/doc /usr/local/lib/node_modules/npm/html
