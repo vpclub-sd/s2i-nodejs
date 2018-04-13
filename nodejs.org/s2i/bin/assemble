@@ -48,7 +48,13 @@ if [ ! -z "$NPM_MIRROR" ]; then
 fi
 
 echo "---> Building your Node application from source"
-npm install -d
-
+if [ ! -z "$BUILD_SCRIPT" ]; then
+	echo "---> Build script: $BUILD_SCRIPT"
+	eval "$BUILD_SCRIPT"
+else
+    echo "---> Build ..."
+	npm install -d
+fi
+echo "---> Finished building"
 # Fix source directory permissions
 fix-permissions ./
