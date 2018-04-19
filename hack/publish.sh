@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-BASE_IMAGES="${NAMESPACE}/${OS}-${ONBUILD_IMAGE_NAME} ${NAMESPACE}/${OS}-${BASE_IMAGE_NAME} ${NAMESPACE}/${OS}-${BASE_IMAGE_NAME}-candidate"
+BASE_IMAGES="${NAMESPACE}/${ONBUILD_IMAGE_NAME} ${NAMESPACE}/${BASE_IMAGE_NAME} ${NAMESPACE}/${BASE_IMAGE_NAME}-candidate"
 
 if [ ! -z $DOCKER_USER ] && [ ! -z $DOCKER_PASS ]; then
   echo "---> Authenticating to DockerHub..."

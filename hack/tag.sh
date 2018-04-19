@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-BASE_IMAGES="${NAMESPACE}/${OS}-${ONBUILD_IMAGE_NAME} ${NAMESPACE}/${OS}-${BASE_IMAGE_NAME} ${NAMESPACE}/${OS}-${BASE_IMAGE_NAME}-candidate"
+BASE_IMAGES="${NAMESPACE}/${ONBUILD_IMAGE_NAME} ${NAMESPACE}/${BASE_IMAGE_NAME} ${NAMESPACE}/${BASE_IMAGE_NAME}-candidate"
 
 for BASE in $BASE_IMAGES ; do
   if [ $(echo "${VERSIONS}" | wc -w) -gt 0 ] ; then

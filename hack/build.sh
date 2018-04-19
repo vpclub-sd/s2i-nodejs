@@ -36,7 +36,7 @@ function docker_build_with_version {
 versions=${VERSION:-$VERSIONS}
 
 for version in ${versions}; do
-  IMAGE_NAME="${NAMESPACE}/${OS}-${BASE_IMAGE_NAME}"
+  IMAGE_NAME="${NAMESPACE}/${BASE_IMAGE_NAME}"
 
   if [[ ! -z "$TEST_MODE" ]]; then
     IMAGE_NAME+="-candidate"
