@@ -33,25 +33,39 @@ RUN set -ex && \
   TEMP_PKGS="libstdc++ libgcc binutils-gold gnupg linux-headers" && \
   apk add --no-cache --virtual .build-deps $TEMP_PKGS && \
   for key in \
-    9554F04D7259F04124DE6B476D5A82AC7E37093B \
     94AE36675C464D64BAFA68DD7434390BDBE9B9C5 \
-    0034A06D9D9B0064CE8ADF6BF1747F4AD2306D93 \
     FD3A5288F042B6850C66B31F09FE44734EB7990E \
     71DCFD284A79C3B38668286BC97EC7A07EDE3FC1 \
     DD8F2338BAE7501E3DD5AC78C273792F7D83545D \
-    B9AE9905FFD7803F25714661B63B535A4C206CA9 \
     C4F0DFFF4E8C1A8236409D08E73BC641CC11F4C8 \
+    B9AE9905FFD7803F25714661B63B535A4C206CA9 \
+    56730D5401028683275BD23C23EFEFE93C4CFFFE \
+    77984A986EBC2AA786BC0F66B01FBB92821C587A \
   ; do \
     gpg --keyserver ipv4.pool.sks-keyservers.net --recv-keys "$key"; \
   done && \
-  curl -o node-v${NODE_VERSION}-linux-x64.tar.gz -sSL https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz && \
-  curl -o SHASUMS256.txt.asc -sSL https://nodejs.org/dist/v${NODE_VERSION}/SHASUMS256.txt.asc && \
-  gpg --batch -d SHASUMS256.txt.asc | grep " node-v${NODE_VERSION}-linux-x64.tar.gz\$" | sha256sum -c - && \
-  tar -zxf node-v${NODE_VERSION}-linux-x64.tar.gz -C /usr/local --strip-components=1 && \
-  npm install -g npm@${NPM_VERSION} http-server uglifyjs nodemon node-gyp node-pre-gyp && \
-  find /usr/local/lib/node_modules/npm -name test -o -name .bin -type d | xargs rm -rf; \
-  rm -rf ~/node-v${NODE_VERSION}-linux-x64.tar.gz ~/SHASUMS256.txt.asc /tmp/node-v${NODE_VERSION} ~/.npm ~/.node-gyp ~/.gnupg \
-    /usr/share/man /tmp/* /usr/local/lib/node_modules/npm/man /usr/local/lib/node_modules/npm/doc /usr/local/lib/node_modules/npm/html
+  curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION.tar.xz" \
+  && curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc" \
+  && gpg --batch --decrypt --output SHASUMS256.txt SHASUMS256.txt.asc \
+  && grep " node-v$NODE_VERSION.tar.xz\$" SHASUMS256.txt | sha256sum -c - \
+  && tar -xf "node-v$NODE_VERSION.tar.xz" \
+  && cd "node-v$NODE_VERSION" \
+  && ./configure \
+  && make -j$(getconf _NPROCESSORS_ONLN) \
+  && make install \
+  && apk del .build-deps \
+  && cd .. \
+  && rm -Rf "node-v$NODE_VERSION" \
+  && rm "node-v$NODE_VERSION.tar.xz" SHASUMS256.txt.asc SHASUMS256.txt
+
+RUN apk add --no-cache --virtual .build-deps-yarn curl gnupg tar \
+  && for key in \
+  6A010C5166006599AA17F08146C2130DFD2497F5 \
+  ; do \
+    gpg --keyserver hkp://ipv4.pool.sks-keyservers.net --recv-keys "$key" \
+  done \
+  && curl -fsSLO --compressed "https://yarnpkg.com/downloads/$YARN_VERSION/yarn-v$YARN_VERSION.tar.gz" \
+  && curl -fsSLO --compressed
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH
