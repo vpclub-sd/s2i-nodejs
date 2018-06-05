@@ -1,4 +1,4 @@
-FROM alpine:3.6
+FROM hidevopsio/s2i-base-alpine
 
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
@@ -30,9 +30,7 @@ LABEL MAINTAINER="John Deng <john.deng@qq.com>" \
 RUN set -ex && \
   apk update && \
   apk upgrade && \
-  INSTALL_PKGS="bash bzip2 libstdc++ g++ gcc make python curl libgcc" && \
-  TEMP_PKGS="binutils-gold gnupg linux-headers" && \
-  apk add $INSTALL_PKGS && \
+  TEMP_PKGS="libstdc++ libgcc binutils-gold gnupg linux-headers" && \
   apk add --no-cache --virtual .build-deps $TEMP_PKGS && \
   for key in \
     9554F04D7259F04124DE6B476D5A82AC7E37093B \
